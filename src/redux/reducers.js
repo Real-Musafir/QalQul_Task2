@@ -9,6 +9,9 @@ import {
   UPDATE_TASK_STATUS_REQUEST,
   UPDATE_TASK_STATUS_SUCCESS,
   UPDATE_TASK_STATUS_FAILURE,
+  REMOVE_TASK_REQUEST,
+  REMOVE_TASK_SUCCESS,
+  REMOVE_TASK_FAILURE,
 } from './actions';
 
 const initialState = {
@@ -22,6 +25,7 @@ const tasksReducer = (state = initialState, action) => {
     case FETCH_TASKS_REQUEST:
     case ADD_TASK_REQUEST:
     case UPDATE_TASK_STATUS_REQUEST:
+    case REMOVE_TASK_REQUEST:
       return {
         ...state,
         loading: true,
@@ -36,6 +40,7 @@ const tasksReducer = (state = initialState, action) => {
     case FETCH_TASKS_FAILURE:
     case ADD_TASK_FAILURE:
     case UPDATE_TASK_STATUS_FAILURE:
+    case REMOVE_TASK_FAILURE:
       return {
         ...state,
         loading: false,
@@ -56,6 +61,12 @@ const tasksReducer = (state = initialState, action) => {
             ? { ...task, completed: action.payload.completed }
             : task
         ),
+      };
+    case REMOVE_TASK_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        tasks: state.tasks.filter((task) => task.id !== action.payload),
       };
     default:
       return state;

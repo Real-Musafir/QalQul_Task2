@@ -10,6 +10,10 @@ export const UPDATE_TASK_STATUS_REQUEST = 'UPDATE_TASK_STATUS_REQUEST';
 export const UPDATE_TASK_STATUS_SUCCESS = 'UPDATE_TASK_STATUS_SUCCESS';
 export const UPDATE_TASK_STATUS_FAILURE = 'UPDATE_TASK_STATUS_FAILURE';
 
+export const REMOVE_TASK_REQUEST = 'REMOVE_TASK_REQUEST';
+export const REMOVE_TASK_SUCCESS = 'REMOVE_TASK_SUCCESS';
+export const REMOVE_TASK_FAILURE = 'REMOVE_TASK_FAILURE';
+
 export const fetchTasksRequest = () => ({
   type: FETCH_TASKS_REQUEST,
 });
@@ -51,5 +55,21 @@ export const updateTaskStatusSuccess = (taskId, completed) => ({
 
 export const updateTaskStatusFailure = (error) => ({
   type: UPDATE_TASK_STATUS_FAILURE,
+  payload: error,
+});
+
+
+export const removeTaskRequest = (taskId) => ({
+  type: REMOVE_TASK_REQUEST,
+  payload: taskId,
+});
+
+export const removeTaskSuccess = (taskId) => ({
+  type: REMOVE_TASK_SUCCESS,
+  payload: taskId,
+});
+
+export const removeTaskFailure = (error) => ({
+  type: REMOVE_TASK_FAILURE,
   payload: error,
 });

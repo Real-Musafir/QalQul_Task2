@@ -9,6 +9,9 @@ import {
   UPDATE_TASK_STATUS_REQUEST,
   updateTaskStatusSuccess,
   updateTaskStatusFailure,
+  REMOVE_TASK_REQUEST,
+  removeTaskSuccess,
+  removeTaskFailure,
 } from './actions';
 
 // Dummy task list for simulation
@@ -53,6 +56,17 @@ function* updateTaskStatus(action) {
   }
 }
 
+// Simulate removing a task from an API
+function* removeTask(action) {
+  try {
+    // Simulate an API call to remove a task
+    yield call(() => new Promise((resolve) => setTimeout(() => resolve(), 500)));
+    yield put(removeTaskSuccess(action.payload));
+  } catch (error) {
+    yield put(removeTaskFailure(error.message));
+  }
+}
+
 function* watchFetchTasks() {
   yield takeEvery(FETCH_TASKS_REQUEST, fetchTasks);
 }
@@ -65,6 +79,10 @@ function* watchUpdateTaskStatus() {
   yield takeEvery(UPDATE_TASK_STATUS_REQUEST, updateTaskStatus);
 }
 
+function* watchRemoveTask() {
+  yield takeEvery(REMOVE_TASK_REQUEST, removeTask);
+}
+
 export default function* rootSaga() {
-  yield all([watchFetchTasks(), watchAddTask(), watchUpdateTaskStatus()]);
+  yield all([watchFetchTasks(), watchAddTask(), watchUpdateTaskStatus(), watchRemoveTask()]);
 }

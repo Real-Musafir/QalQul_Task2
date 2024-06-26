@@ -1,7 +1,6 @@
-// src/components/TaskList.js
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchTasksRequest, updateTaskStatusRequest } from '../redux/actions';
+import { fetchTasksRequest, updateTaskStatusRequest, removeTaskRequest } from '../redux/actions';
 import styled from 'styled-components';
 
 const TaskListContainer = styled.ul`
@@ -38,9 +37,24 @@ const StatusButton = styled.button`
   border-radius: 4px;
   cursor: pointer;
   margin-top: 10px;
+  margin-right: 10px;
 
   &:hover {
     background-color: ${props => props.completed ? '#c82333' : '#218838'};
+  }
+`;
+
+const RemoveButton = styled.button`
+  padding: 10px;
+  background-color: #ff0000;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+
+  &:hover {
+    background-color: #cc0000;
   }
 `;
 
@@ -54,6 +68,10 @@ const TaskList = () => {
 
   const handleStatusToggle = (taskId, currentStatus) => {
     dispatch(updateTaskStatusRequest(taskId, !currentStatus));
+  };
+
+  const handleRemoveTask = (taskId) => {
+    dispatch(removeTaskRequest(taskId));
   };
 
   if (loading) {
@@ -77,6 +95,7 @@ const TaskList = () => {
           >
             {task.completed ? 'Mark as Incomplete' : 'Mark as Completed'}
           </StatusButton>
+          <RemoveButton onClick={() => handleRemoveTask(task.id)}>Remove Task</RemoveButton>
         </TaskItem>
       ))}
     </TaskListContainer>
