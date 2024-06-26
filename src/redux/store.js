@@ -1,7 +1,8 @@
 import { createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
+import { all } from 'redux-saga/effects';
 import tasksReducer from './reducers';
-import watchFetchTasks from './sagas';
+import rootSaga from './sagas';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -10,6 +11,6 @@ const store = createStore(
   applyMiddleware(sagaMiddleware)
 );
 
-sagaMiddleware.run(watchFetchTasks);
+sagaMiddleware.run(rootSaga);
 
 export default store;

@@ -1,16 +1,17 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+import React from 'react';
 import TaskList from './components/TaskList';
+import AddTask from './components/AddTask';
+import './App.css';
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <div>
+    <div className="container">
       <h1>Task List</h1>
+      <AddTask />
       <TaskList />
     </div>
-    </div>
   );
-}
+};
 
 export default App;
