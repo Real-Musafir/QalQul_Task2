@@ -1,3 +1,5 @@
+// src/redux/sagas.js
+
 import { call, put, takeEvery, all } from 'redux-saga/effects';
 import {
   FETCH_TASKS_REQUEST,
@@ -14,59 +16,70 @@ import {
   removeTaskFailure,
 } from './actions';
 
-// Dummy task list for simulation
-const dummyTasks = [
-  { id: 1, title: 'Task 1', description: 'Description for Task 1', completed: false },
-  { id: 2, title: 'Task 2', description: 'Description for Task 2', completed: false },
-  { id: 3, title: 'Task 3', description: 'Description for Task 3', completed: true },
-];
+// Simulated API functions
+const dummyFetchTasks = () => new Promise(resolve => {
+  setTimeout(() => resolve([
+    { id: 1, title: 'Task 1', description: 'Description for Task 1', completed: false },
+    { id: 2, title: 'Task 2', description: 'Description for Task 2', completed: false },
+    { id: 3, title: 'Task 3', description: 'Description for Task 3', completed: true },
+    { id: 4, title: 'Task 4', description: 'Description for Task 4', completed: false },
+    { id: 5, title: 'Task 5', description: 'Description for Task 5', completed: true },
+    { id: 6, title: 'Task 6', description: 'Description for Task 6', completed: true },
 
-// Simulate fetching tasks from an API
+  ]), 1000);
+});
+
+const dummyAddTask = (task) => new Promise(resolve => {
+  setTimeout(() => resolve(task), 500);
+});
+
+const dummyUpdateTaskStatus = (taskId, completed) => new Promise(resolve => {
+  setTimeout(() => resolve({ taskId, completed }), 500);
+});
+
+const dummyRemoveTask = (taskId) => new Promise(resolve => {
+  setTimeout(() => resolve(), 500);
+});
+
+// Sagas for handling tasks
 function* fetchTasks() {
   try {
-    // Simulate an API call
-    const tasks = yield call(() => new Promise((resolve) => setTimeout(() => resolve(dummyTasks), 1000)));
+    const tasks = yield call(dummyFetchTasks);
     yield put(fetchTasksSuccess(tasks));
   } catch (error) {
     yield put(fetchTasksFailure(error.message));
   }
 }
 
-// Simulate adding a task to an API
 function* addTask(action) {
   try {
-    // Simulate an API call to add a task
-    const newTask = action.payload;
-    yield call(() => new Promise((resolve) => setTimeout(() => resolve(newTask), 500)));
+    const newTask = yield call(dummyAddTask, action.payload);
     yield put(addTaskSuccess(newTask));
   } catch (error) {
     yield put(addTaskFailure(error.message));
   }
 }
 
-// Simulate updating a task status in an API
 function* updateTaskStatus(action) {
   try {
-    // Simulate an API call to update task status
     const { taskId, completed } = action.payload;
-    yield call(() => new Promise((resolve) => setTimeout(() => resolve(), 500)));
+    yield call(dummyUpdateTaskStatus, taskId, completed);
     yield put(updateTaskStatusSuccess(taskId, completed));
   } catch (error) {
     yield put(updateTaskStatusFailure(error.message));
   }
 }
 
-// Simulate removing a task from an API
 function* removeTask(action) {
   try {
-    // Simulate an API call to remove a task
-    yield call(() => new Promise((resolve) => setTimeout(() => resolve(), 500)));
+    yield call(dummyRemoveTask, action.payload);
     yield put(removeTaskSuccess(action.payload));
   } catch (error) {
     yield put(removeTaskFailure(error.message));
   }
 }
 
+// Watchers
 function* watchFetchTasks() {
   yield takeEvery(FETCH_TASKS_REQUEST, fetchTasks);
 }
@@ -83,6 +96,12 @@ function* watchRemoveTask() {
   yield takeEvery(REMOVE_TASK_REQUEST, removeTask);
 }
 
+// Root saga
 export default function* rootSaga() {
-  yield all([watchFetchTasks(), watchAddTask(), watchUpdateTaskStatus(), watchRemoveTask()]);
+  yield all([
+    watchFetchTasks(),
+    watchAddTask(),
+    watchUpdateTaskStatus(),
+    watchRemoveTask(),
+  ]);
 }
