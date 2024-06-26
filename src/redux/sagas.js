@@ -1,4 +1,3 @@
-// src/redux/sagas.js
 import { call, put, takeEvery, all } from 'redux-saga/effects';
 import {
   FETCH_TASKS_REQUEST,
@@ -7,6 +6,9 @@ import {
   ADD_TASK_REQUEST,
   addTaskSuccess,
   addTaskFailure,
+  UPDATE_TASK_STATUS_REQUEST,
+  updateTaskStatusSuccess,
+  updateTaskStatusFailure,
 } from './actions';
 
 // Dummy task list for simulation
@@ -39,6 +41,18 @@ function* addTask(action) {
   }
 }
 
+// Simulate updating a task status in an API
+function* updateTaskStatus(action) {
+  try {
+    // Simulate an API call to update task status
+    const { taskId, completed } = action.payload;
+    yield call(() => new Promise((resolve) => setTimeout(() => resolve(), 500)));
+    yield put(updateTaskStatusSuccess(taskId, completed));
+  } catch (error) {
+    yield put(updateTaskStatusFailure(error.message));
+  }
+}
+
 function* watchFetchTasks() {
   yield takeEvery(FETCH_TASKS_REQUEST, fetchTasks);
 }
@@ -47,6 +61,10 @@ function* watchAddTask() {
   yield takeEvery(ADD_TASK_REQUEST, addTask);
 }
 
+function* watchUpdateTaskStatus() {
+  yield takeEvery(UPDATE_TASK_STATUS_REQUEST, updateTaskStatus);
+}
+
 export default function* rootSaga() {
-  yield all([watchFetchTasks(), watchAddTask()]);
+  yield all([watchFetchTasks(), watchAddTask(), watchUpdateTaskStatus()]);
 }

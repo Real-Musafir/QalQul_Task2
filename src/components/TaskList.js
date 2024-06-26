@@ -1,7 +1,7 @@
 // src/components/TaskList.js
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchTasksRequest } from '../redux/actions';
+import { fetchTasksRequest, updateTaskStatusRequest } from '../redux/actions';
 import styled from 'styled-components';
 
 const TaskListContainer = styled.ul`
@@ -30,6 +30,20 @@ const TaskStatus = styled.p`
   margin: 5px 0;
 `;
 
+const StatusButton = styled.button`
+  padding: 10px;
+  background-color: ${props => props.completed ? '#dc3545' : '#28a745'};
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+
+  &:hover {
+    background-color: ${props => props.completed ? '#c82333' : '#218838'};
+  }
+`;
+
 const TaskList = () => {
   const dispatch = useDispatch();
   const { tasks, loading, error } = useSelector((state) => state);
@@ -37,6 +51,10 @@ const TaskList = () => {
   useEffect(() => {
     dispatch(fetchTasksRequest());
   }, [dispatch]);
+
+  const handleStatusToggle = (taskId, currentStatus) => {
+    dispatch(updateTaskStatusRequest(taskId, !currentStatus));
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -53,6 +71,12 @@ const TaskList = () => {
           <TaskTitle>{task.title}</TaskTitle>
           <TaskDescription>{task.description}</TaskDescription>
           <TaskStatus>{task.completed ? 'Completed' : 'Incomplete'}</TaskStatus>
+          <StatusButton
+            completed={task.completed}
+            onClick={() => handleStatusToggle(task.id, task.completed)}
+          >
+            {task.completed ? 'Mark as Incomplete' : 'Mark as Completed'}
+          </StatusButton>
         </TaskItem>
       ))}
     </TaskListContainer>
